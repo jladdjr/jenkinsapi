@@ -44,7 +44,7 @@ class Artifact(object):
             log.warning(
                 "Attempt to change the filename of artifact %s on save.",
                 self.filename)
-        if os.path.exists(fspath):
+        if os.path.exists(fspath) and strict_validation:
             if self.build:
                 try:
                     if self._verify_download(fspath, strict_validation):
@@ -60,7 +60,8 @@ class Artifact(object):
         else:
             log.info("Local file is missing, downloading new.")
         filepath = self._do_download(fspath)
-        self._verify_download(filepath, strict_validation)
+        if strict_validation:
+            self._verify_download(filepath, strict_validation)
         return fspath
 
     def get_jenkins_obj(self):
